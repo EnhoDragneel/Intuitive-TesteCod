@@ -1,0 +1,4 @@
+/csvs/*
+/venv/*
+*.zip
+*.csv
