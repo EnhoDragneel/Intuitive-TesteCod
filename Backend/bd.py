@@ -1,16 +1,23 @@
+import os
+from dotenv import load_dotenv
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from sqlalchemy import create_engine
 
-DB_NAME = "postgres"
-DB_USER = "postgres"
-DB_PASSWORD = "01563853"
-DB_HOST = "localhost"
-DB_PORT = "5432"
+
+load_dotenv()
+
+
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+
 
 def criar_banco_se_nao_existir():
     conn = psycopg2.connect(
-        dbname="postgres",
+        dbname="postgres",  
         user=DB_USER,
         password=DB_PASSWORD,
         host=DB_HOST,
@@ -31,9 +38,11 @@ def criar_banco_se_nao_existir():
     cursor.close()
     conn.close()
 
+
 def conectar_engine():
     """Retorna engine do SQLAlchemy."""
     return create_engine(f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
+
 
 def conectar_banco_psycopg2():
     """Retorna conexão psycopg2 ao banco criado."""

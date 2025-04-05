@@ -16,7 +16,7 @@ PASTA_CSV = "csvs"
 PASTA_ZIP_ANOS = "zip_anos"
 PASTA_CSV_OPERADORAS = "csv_operadoras"
 
-# -------------------- TESTES 1 E 2 --------------------
+# -------------------- TESTES DE WEB SCRAPING E DE TRANSFORMAÇÃO DE DADOS--------------------
 
 def baixar_pdfs(url):
     os.makedirs(PASTA_PDFS, exist_ok=True)
@@ -156,7 +156,7 @@ def detectar_encoding_csv(caminho):
     return result['encoding']
 
 
-# -------------------- TESTE 3 --------------------
+# -------------------- TESTE DE BANCO DE DADOS --------------------
 
 def baixar_arquivos_zip_ultimos_anos():
     """
@@ -225,7 +225,7 @@ def extrair_zips_para_pasta(zip_dir=PASTA_ZIP_ANOS, destino="demonstracoes_conta
             with zipfile.ZipFile(caminho_zip, 'r') as zip_ref:
                 zip_ref.extractall(destino)
                 print(f"Extraído: {caminho_zip} → {destino}")
-'''          
+         
     for nome_csv in os.listdir(destino):
         if nome_csv.endswith(".csv"):
             caminho_csv = os.path.join(destino, nome_csv)
@@ -233,7 +233,7 @@ def extrair_zips_para_pasta(zip_dir=PASTA_ZIP_ANOS, destino="demonstracoes_conta
                 importar_csv_para_postgres(caminho_csv, "demonstracoes_contabeis", append=True)
             except Exception as e:
                 print(f"Erro ao importar {caminho_csv}: {e}")
-'''   
+  
 
 from sqlalchemy.sql import text
 import pandas as pd
