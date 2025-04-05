@@ -1,0 +1,35 @@
+{
+	"info": {
+		"_postman_id": "fd2df7e0-7f97-4310-9961-cd623bdb176a",
+		"name": "Intuitive Teste",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43183869",
+		"_collection_link": "https://lively-eclipse-231737.postman.co/workspace/Team-Workspace~ada326d5-7909-4887-8efb-3dab09c74032/collection/43183869-fd2df7e0-7f97-4310-9961-cd623bdb176a?action=share&source=collection_link&creator=43183869"
+	},
+	"item": [
+		{
+			"name": "buscar",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/buscar/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"buscar",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
