@@ -10,18 +10,32 @@ from django.db.models import Q
 @api_view(['GET'])
 def buscar_operadoras(request):
     termo = request.GET.get('q', '')
-    
-    resultados = Operadora.objects.filter(
+    page = int(request.GET.get('page', 1))
+    page_size = int(request.GET.get('page_size', 10))
+
+    operadoras_qs = Operadora.objects.filter(
         Q(razao_social__icontains=termo) |
         Q(nome_fantasia__icontains=termo) |
         Q(cnpj__icontains=termo)
-    )[:10]  
+    )
+
+    total = operadoras_qs.count()
+    start = (page - 1) * page_size
+    end = start + page_size
+    operadoras_page = operadoras_qs[start:end]
 
     data = [{
         'registro_ans': o.registro_ans,
         'razao_social': o.razao_social,
         'nome_fantasia': o.nome_fantasia,
         'cnpj': o.cnpj,
-    } for o in resultados]
+    } for o in operadoras_page]
 
-    return Response(data)
+    return Response({
+        'results': data,
+        'total': total,
+        'page': page,
+        'page_size': page_size,
+        'total_pages': (total + page_size - 1) // page_size
+    })
+
