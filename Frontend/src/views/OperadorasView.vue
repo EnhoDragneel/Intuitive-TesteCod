@@ -18,6 +18,17 @@
           </svg>
         </button>
       </div>
+
+      
+      <div class="filtro-modalidade">
+        <label for="modalidade-select">Filtrar por modalidade:</label>
+        <select id="modalidade-select" v-model="modalidadeSelecionada" @change="carregarOperadoras(1)">
+          <option value="">Todas</option>
+          <option v-for="mod in modalidades" :key="mod" :value="mod">
+            {{ mod }}
+          </option>
+        </select>
+      </div>
     </div>
 
     <div v-if="carregando" class="carregando">
@@ -32,9 +43,10 @@
       <div v-for="op in operadoras" :key="op.registro_ans" class="card-operadora">
         <h3 class="card-titulo">{{ op.razao_social }}</h3>
         <div class="card-info">
-          <p><span class="label">Fantasia:</span> {{ op.nome_fantasia || 'N/A' }}</p>
-          <p><span class="label">CNPJ:</span> {{ op.cnpj }}</p>
-          <p><span class="label">Registro ANS:</span> {{ op.registro_ans }}</p>
+          <p><span class="label">Fantasia:</span> {{ op?.nome_fantasia ??'N/A'}}</p>
+          <p><span class="label">CNPJ:</span> {{ op?.cnpj ??'N/A'}}</p>
+          <p><span class="label">Registro ANS:</span> {{ op?.registro_ans ??'N/A'}}</p>
+          <p><span class="label">Modalidade:</span> {{ op?.modalidade ??'N/A'}}</p>
         </div>
       </div>
     </div>
@@ -76,6 +88,8 @@ const paginaAtual = ref(1)
 const totalPaginas = ref(1)
 const pageSize = 10
 const carregando = ref(false)
+const modalidades = ref([])
+const modalidadeSelecionada = ref('')
 
 async function carregarOperadoras(pagina = 1) {
   if (pagina < 1) return
@@ -84,9 +98,8 @@ async function carregarOperadoras(pagina = 1) {
   paginaAtual.value = pagina
 
   const params = new URLSearchParams()
-  if (busca.value) {
-    params.append('q', busca.value)
-  }
+  if (busca.value) params.append('q', busca.value)
+  if (modalidadeSelecionada.value) params.append('modalidade', modalidadeSelecionada.value)
   params.append('page', pagina)
   params.append('page_size', pageSize)
 
@@ -103,10 +116,23 @@ async function carregarOperadoras(pagina = 1) {
   }
 }
 
+async function carregarModalidades() {
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/buscar/?page_size=2000')
+    const data = await response.json()
+    const unicas = new Set(data.results.map(op => op.modalidade))
+    modalidades.value = [...unicas].filter(Boolean).sort()
+  } catch (error) {
+    console.error('Erro ao carregar modalidades:', error)
+  }
+}
+
 onMounted(() => {
+  carregarModalidades()
   carregarOperadoras()
 })
 </script>
+
 
 <style>
 :root {
@@ -265,4 +291,21 @@ onMounted(() => {
 .info-pagina {
   color: #374151;
 }
+
+.filtro-modalidade {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.filtro-modalidade select {
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+}
+
 </style>
