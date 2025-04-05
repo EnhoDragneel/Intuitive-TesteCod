@@ -17,7 +17,7 @@
 defineProps({
   variant: {
     type: String,
-    default: 'primary', // 'primary', 'outline', 'ghost'
+    default: 'primary',
   },
   disabled: {
     type: Boolean,
