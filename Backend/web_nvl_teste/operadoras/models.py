@@ -22,6 +22,12 @@ class Operadora(models.Model):
     regiao_comercializacao = models.CharField(max_length=255, db_column='Regiao_de_Comercializacao', null=True, blank=True)
     data_registro_ans = models.DateField(db_column='Data_Registro_ANS', null=True, blank=True)
 
+
     class Meta:
         managed = False  
         db_table = 'operadoras_ativas'  
+        
+
+
+
+

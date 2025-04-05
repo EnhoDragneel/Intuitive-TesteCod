@@ -17,14 +17,10 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from operadoras.views import buscar_operadoras
+from operadoras.views import buscar_operadoras 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-]
-
-urlpatterns = [
-    path("buscar/", buscar_operadoras, name="buscar_operadoras"),
 ]
 
 urlpatterns = [

@@ -107,16 +107,47 @@ def importar_csv_para_postgres(csv_path, nome_tabela, append=False):
     encoding = detectar_encoding_csv(csv_path)
     df = pd.read_csv(csv_path, encoding=encoding, sep=";")
 
-    # Verifica se a coluna "DATA" existe e converte para datetime
+   
     if 'DATA' in df.columns:
         try:
-            df['DATA'] = pd.to_datetime(df['DATA'], dayfirst=True, errors='coerce')  # Ajusta conforme o formato
+            df['DATA'] = pd.to_datetime(df['DATA'], dayfirst=True, errors='coerce')  
         except Exception as e:
             print(f"Erro ao converter a coluna 'DATA': {e}")
 
     if_exists_mode = "append" if append else "replace"
     df.to_sql(nome_tabela, engine, if_exists=if_exists_mode, index=False)
     print(f"Tabela '{nome_tabela}' atualizada com sucesso!")
+
+
+def importar_csv_com_pk(csv_path, nome_tabela):
+    engine = conectar_engine()
+    encoding = detectar_encoding_csv(csv_path)
+    df = pd.read_csv(csv_path, encoding=encoding, sep=";")
+
+    if 'DATA' in df.columns:
+        try:
+            df['DATA'] = pd.to_datetime(df['DATA'], dayfirst=True, errors='coerce')
+        except Exception as e:
+            print(f"Erro ao converter a coluna 'DATA': {e}")
+
+
+    df.to_sql(nome_tabela, engine, if_exists="replace", index=False)
+    print(f"Tabela '{nome_tabela}' criada com sucesso!")
+
+
+    if "Registro_ANS" in df.columns:
+        with engine.connect() as conn:
+            try:
+                conn.execute(text(f"""
+                    ALTER TABLE "{nome_tabela}"
+                    ADD PRIMARY KEY ("Registro_ANS");
+                """))
+                print(f"Chave primária definida na tabela '{nome_tabela}' (coluna 'Registro_ANS').")
+            except Exception as e:
+                print(f"Erro ao definir chave primária: {e}")
+    else:
+        print(f"A coluna 'Registro_ANS' não foi encontrada na tabela '{nome_tabela}'.")
+
 
 
 def detectar_encoding_csv(caminho):
@@ -181,7 +212,7 @@ def baixar_dados_operadoras():
         with open(caminho_csv, "wb") as f:
             f.write(response.content)
         print(f"Download concluído: {caminho_csv}")
-        importar_csv_para_postgres(caminho_csv, "operadoras_ativas")
+        importar_csv_com_pk(caminho_csv, "operadoras_ativas")
     else:
         print(f"Erro ao baixar {url}")
 
@@ -194,7 +225,7 @@ def extrair_zips_para_pasta(zip_dir=PASTA_ZIP_ANOS, destino="demonstracoes_conta
             with zipfile.ZipFile(caminho_zip, 'r') as zip_ref:
                 zip_ref.extractall(destino)
                 print(f"Extraído: {caminho_zip} → {destino}")
-'''            
+'''          
     for nome_csv in os.listdir(destino):
         if nome_csv.endswith(".csv"):
             caminho_csv = os.path.join(destino, nome_csv)
