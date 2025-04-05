@@ -5,13 +5,13 @@ DB_PASSWORD=sua_senha
 DB_HOST=localhost
 DB_PORT=5432
 
-# Para rodar o projeto será necessário executar o comando 
+# Para rodar o projeto será necessário executar o comando dentro do código Intuitive_Nvl
 
 python Intuitive_Nvl 
 
 # Via terminal para está executando os TESTES de Web Scrapping, de Transformação de Dados e Banco de Dados, os resultados dos primeiros testes serão salvos na mesma pasta em que o código for executado.
 
 
-# Para rodar o servidor execute o comando
+# Para rodar o servidor execute o comando na pasta web
 
 python manage.py runserver
